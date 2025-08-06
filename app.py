@@ -8,27 +8,24 @@ import plotly.express as px
 @st.cache_data
 def load_data():
     # df = pd.read_csv('C:\\General_workspace/data/user_profiling/scores_df.csv')
-    # df = pd.read_parquet('C:\\General_workspace/data/user_profiling/scores_df.parquet')
-    df = pd.read_parquet('scores_df.parquet')
-    # df = df[df['BrandName'] != 'Mystake']
+    df = pd.read_parquet('C:\\General_workspace/data/user_profiling/scores_df.parquet')
+    # df = pd.read_parquet('scores_df.parquet')
     return df
 
 # Load data
 df = load_data()
 
-# Dropdown for BrandName
-# st.header("Brands")
+st.caption(f'Updated: :red[**{df.RunDate.max().date()}**]')
+
 brand_list = sorted(df['BrandName'].unique().tolist())
 selected_brand = st.selectbox("Select Brand", brand_list)
-
-# client_list = sorted(df.index.unique().tolist())
-# selected_client = st.selectbox("Select Client ID", client_list)
-
 
 # Apply filters
 filtered_df = df.copy()
 filtered_df = filtered_df[filtered_df['BrandName'] == selected_brand]
-st.caption(f'Number of Unique Clients: **{filtered_df.index.nunique():,}**')
+
+
+st.caption(f'Number of Unique Clients: :red[**{filtered_df.index.nunique():,}**]')
 
 tab1, tab2= st.tabs(['Filters', 'Clients'])
 
@@ -39,13 +36,6 @@ with tab1:
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         selected_1 = st.select_slider("Amount Score", options=range(11), value=(0, 10))
-        # bet_range = st.slider(
-        #     label="Bet Amount",
-        #     min_value=float(min_bet),  # Convert to float for continuous range
-        #     max_value=float(max_bet),
-        #     value=(float(min_bet), float(max_bet)),  # Default range (min to max)
-        #     # step=1.0 if max_bet - min_bet > 1 else 0.01  # Adjust step size dynamically
-        # )
     with col2:
         selected_2 = st.select_slider("Frequency Score", options=range(11), value=(0, 10))
     with col3:
@@ -64,26 +54,21 @@ with tab1:
         (filtered_df['LOYAL_SCORE'] >= selected_5[0]) & (filtered_df['LOYAL_SCORE'] <= selected_5[1])
     ]
 
-    # st.divider()
 
     # Info cards
     col1, col2, col3 = st.columns(3)
 
     with col1:
         unique_clients = filtered_df.index.nunique()
-        # st.subheader(":orange[Unique Clients]")
-        # st.markdown(f":orange[**{unique_clients:,}**]")
-        st.metric(":orange[Unique Clients]", f"{unique_clients:,}", border=True)
+        st.metric(":red[Unique Clients]", f"{unique_clients:,}", border=True)
     with col2:
         total_bets = filtered_df['BetAmount_System'].sum()
-        # st.subheader(":orange[Total Bet Amount]")
-        # st.markdown(f":orange[**{total_bets:,.0f}**]")
-        st.metric(":orange[Total Bet Amount]", f"{total_bets:,.0f}", border=True)
+        st.metric(":red[Total Bet Amount]", f"{total_bets:,.0f}", border=True)
     with col3:
         total_ggr = filtered_df['GGR'].sum()
-        # st.subheader(":orange[Total GGR]")
-        # st.markdown(f":orange[**{total_ggr:,.0f}**]")
-        st.metric(":orange[Total GGR]", f"{total_ggr:,.0f}", border=True)
+        st.metric(":red[Total GGR]", f"{total_ggr:,.0f}", border=True)
+
+    st.dataframe(filtered_df.drop(['RunDate', 'BrandName'], axis=1), height=200)
 
     # Histogram section
     st.subheader("Score Distributions")
@@ -104,7 +89,8 @@ with tab1:
         nbins=50,
         # title=f"Distribution of {selected_score}",
         labels={selected_score: selected_score.replace('_', ' ').title()},
-        template="plotly_white"
+        template="plotly_white",
+        color_discrete_sequence=['grey']
     )
 
     fig.update_layout(
@@ -126,8 +112,6 @@ with tab2:
     else:
         st.write("Please enter Client ID")
 
-    # user_id_list = sorted(filtered_df.index.unique().tolist())
-    # selected_user = st.selectbox("Select User Profile ID", user_id_list)
 
     if not user_df.empty:
 
