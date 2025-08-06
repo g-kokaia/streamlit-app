@@ -9,7 +9,7 @@ import plotly.express as px
 def load_data():
     # df = pd.read_csv('C:\\General_workspace/data/user_profiling/scores_df.csv')
     # df = pd.read_parquet('C:\\General_workspace/data/user_profiling/scores_df.parquet')
-    df = pd.read_parquet('C:\\streamlit-app/scores_df.parquet')
+    df = pd.read_parquet('scores_df.parquet')
     # df = df[df['BrandName'] != 'Mystake']
     return df
 
