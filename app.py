@@ -27,7 +27,7 @@ filtered_df = filtered_df[filtered_df['BrandName'] == selected_brand]
 
 st.caption(f'Number of Unique Clients: :red[**{filtered_df.index.nunique():,}**]')
 
-tab1, tab2= st.tabs(['Filters', 'Clients'])
+tab1, tab2= st.tabs(['**Filters**', '**Clients**'])
 
 with tab1:
 
